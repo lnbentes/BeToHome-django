@@ -11,10 +11,11 @@ class Transaction(models.Model):
         ('TRANSFER', 'Transfer'),
     ]
     METHOD_CHOICES = [
-        ('CREDIT', 'Credit'),
-        ('DEBIT', 'Debit'),
-        ('CASH', 'Cash'),
-        ('INSTALLMENT', 'Installment'),
+        ('CREDIT', 'Crédito'),
+        ('DEBIT', 'Débito'),
+        ('CASH', 'Dinheiro'),
+        ('PIX', 'Pix'),
+        ('INSTALLMENT', 'Parcelado'),
     ]
 
     description = models.CharField(max_length=255)

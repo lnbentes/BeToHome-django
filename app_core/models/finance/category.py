@@ -1,16 +1,22 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class Category(models.Model):
     TYPE_CHOICES = [
-        ('INCOME', 'Income'),
-        ('EXPENSE', 'Expense'),
-        ('BOTH', 'Both'),
+        ('INCOME', 'Receita'),
+        ('EXPENSE', 'Despesa'),
+        ('BOTH', 'Ambos'),
     ]
 
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='categories', null=True, blank=True
+    )
     name = models.CharField(max_length=100)
-    icon = models.CharField(max_length=50)
-    color = models.CharField(max_length=7)
+    icon = models.CharField(max_length=50, default='pricetag-outline')
+    color = models.CharField(max_length=7, default='#22c55e')
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
 
     class Meta:

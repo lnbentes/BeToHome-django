@@ -1,6 +1,6 @@
 {% load static %}
 {% comment %}Cache-buster: incrementar este valor ao deploiar mudanças no JS/CSS{% endcomment %}
-{% with v="1" %}
+{% with v="3" %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -73,7 +73,14 @@
          ─────────────────────────────────────────── -->
     <!-- HTTP infrastructure (getCookie + request) -->
     <script src="{% static 'js/api/http.js' %}?v={{ v }}"></script>
-    <!-- Service definitions (tasks, finance, places...) -->
+    <!-- Módulos por domínio -->
+    <script src="{% static 'js/api/modules/auth.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/users.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/tasks.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/finance.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/places.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/events.js' %}?v={{ v }}"></script>
+    <!-- Agregador (monta o objeto global `api`) -->
     <script src="{% static 'js/api/index.js' %}?v={{ v }}"></script>
 
     <!-- ═══════════════════════════════════════════
@@ -96,7 +103,10 @@
     <script src="{% static 'js/components/modals/modal.js' %}?v={{ v }}"></script>
     <script src="{% static 'js/components/modals/task-modal.js' %}?v={{ v }}"></script>
     <script src="{% static 'js/components/modals/place-modal.js' %}?v={{ v }}"></script>
-    <script src="{% static 'js/components/modals/transaction-modal.js' %}?v={{ v }}"></script>
+    <!-- Modais financeiros -->
+    <script src="{% static 'js/components/modals/finance/transaction-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/finance/account-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/finance/category-modal.js' %}?v={{ v }}"></script>
 
     <!-- ═══════════════════════════════════════════
          Views individuais (estendem `ui`)
@@ -104,7 +114,12 @@
     <script src="{% static 'js/views/login.js' %}?v={{ v }}"></script>
     <script src="{% static 'js/views/dashboard.js' %}?v={{ v }}"></script>
     <script src="{% static 'js/views/tasks.js' %}?v={{ v }}"></script>
-    <script src="{% static 'js/views/finance.js' %}?v={{ v }}"></script>
+    <!-- View Financeiro (dividida em módulos) -->
+    <script src="{% static 'js/views/finance/state.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance/loader.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance/render.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance/events.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance/index.js' %}?v={{ v }}"></script>
     <script src="{% static 'js/views/places.js' %}?v={{ v }}"></script>
     <script src="{% static 'js/views/calendar.js' %}?v={{ v }}"></script>
 

@@ -1,4 +1,6 @@
 {% load static %}
+{% comment %}Cache-buster: incrementar este valor ao deploiar mudanças no JS/CSS{% endcomment %}
+{% with v="1" %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v={{ v }}">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -66,21 +68,50 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- API Client -->
-    <script src="{% static 'js/api.js' %}"></script>
+    <!-- ═══════════════════════════════════════════
+         Camada de API
+         ─────────────────────────────────────────── -->
+    <!-- HTTP infrastructure (getCookie + request) -->
+    <script src="{% static 'js/api/http.js' %}?v={{ v }}"></script>
+    <!-- Service definitions (tasks, finance, places...) -->
+    <script src="{% static 'js/api/index.js' %}?v={{ v }}"></script>
 
-    <!-- UI core (define o objeto `ui`) -->
-    <script src="{% static 'js/ui.js' %}"></script>
+    <!-- ═══════════════════════════════════════════
+         Core da aplicação
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/core/state.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/core/theme.js' %}?v={{ v }}"></script>
 
-    <!-- Views individuais (estendem `ui`) -->
-    <script src="{% static 'js/views/login.js' %}"></script>
-    <script src="{% static 'js/views/dashboard.js' %}"></script>
-    <script src="{% static 'js/views/tasks.js' %}"></script>
-    <script src="{% static 'js/views/finance.js' %}"></script>
-    <script src="{% static 'js/views/places.js' %}"></script>
-    <script src="{% static 'js/views/calendar.js' %}"></script>
+    <!-- ═══════════════════════════════════════════
+         UI Core
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/ui.js' %}?v={{ v }}"></script>
 
-    <!-- Controlador principal da aplicação -->
-    <script src="{% static 'js/main.js' %}"></script>
+    <!-- Router (depende de ui + state) -->
+    <script src="{% static 'js/core/router.js' %}?v={{ v }}"></script>
+
+    <!-- ═══════════════════════════════════════════
+         Sistema de Modais
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/components/modals/modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/task-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/place-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/transaction-modal.js' %}?v={{ v }}"></script>
+
+    <!-- ═══════════════════════════════════════════
+         Views individuais (estendem `ui`)
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/views/login.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/dashboard.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/tasks.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/places.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/calendar.js' %}?v={{ v }}"></script>
+
+    <!-- ═══════════════════════════════════════════
+         Controlador principal
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/main.js' %}?v={{ v }}"></script>
 </body>
 </html>
+{% endwith %}

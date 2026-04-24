@@ -1,4 +1,5 @@
 // views/finance.js - Renderização da tela Financeiro
+// Depende de: components/modals/transaction-modal.js, core/state.js
 
 ui.renderFinance = function (appData) {
     const { transactions, accounts, categories } = appData;
@@ -46,7 +47,7 @@ ui.renderFinance = function (appData) {
                             <button class="bg-white dark:bg-earth-800 p-2 rounded-lg border border-earth-200 dark:border-earth-700">
                                 <ion-icon name="filter-outline"></ion-icon>
                             </button>
-                            <button class="bg-forest-600 text-white px-4 py-2 rounded-xl">Add +</button>
+                            <button id="btn-new-transaction" class="bg-forest-600 text-white px-4 py-2 rounded-xl">Add +</button>
                         </div>
                     </div>
                     <div class="bg-white dark:bg-earth-900 rounded-2xl border border-earth-200 dark:border-earth-800 overflow-hidden">
@@ -80,4 +81,6 @@ ui.renderFinance = function (appData) {
             </div>
         </div>
     `;
+
+    document.getElementById('btn-new-transaction').addEventListener('click', () => transactionModal.open());
 };

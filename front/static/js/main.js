@@ -1,32 +1,17 @@
-// main.js - Core Application Controller
-
-const state = {
-    user: null,
-    currentView: 'dashboard',
-    tasks: [],
-    transactions: [],
-    accounts: [],
-    categories: [],
-    places: [],
-    events: [],
-    isDarkMode: localStorage.getItem('theme') === 'dark'
-};
+// main.js - Ponto de entrada da aplicação
+// Depende de: core/state.js | core/theme.js | core/router.js | api/index.js | ui.js
 
 async function init() {
+    theme.apply();
     setupEventListeners();
-    applyTheme();
-    
-    // Check if logged in by fetching user info
+
     try {
-        const users = await api.request('/api/users/');
-        // In a real app we'd get the "me" endpoint.
-        // For this MVP, if we get a 200, we're "logged in".
-        // Let's assume the first user is the logged in one for demo.
+        const users = await api.users.list();
         if (users.length > 0) {
             state.user = users[0];
             await loadAppData();
             ui.showApp();
-            navigateTo(state.currentView);
+            router.navigateTo(state.currentView);
         } else {
             ui.showLogin();
         }
@@ -43,57 +28,29 @@ async function loadAppData() {
             api.finance.accounts.list(),
             api.finance.categories.list(),
             api.places.list(),
-            api.events.list()
+            api.events.list(),
         ]);
-        state.tasks = tasks;
+        state.tasks        = tasks;
         state.transactions = transactions;
-        state.accounts = accounts;
-        state.categories = categories;
-        state.places = places;
-        state.events = events;
+        state.accounts     = accounts;
+        state.categories   = categories;
+        state.places       = places;
+        state.events       = events;
     } catch (err) {
-        console.error("Failed to load app data", err);
-    }
-}
-
-function navigateTo(view) {
-    state.currentView = view;
-    
-    // Update active nav item
-    document.querySelectorAll('.nav-item').forEach(btn => {
-        if (btn.dataset.view === view) {
-            btn.classList.add('bg-forest-50', 'text-forest-700', 'dark:bg-forest-900/20', 'dark:text-forest-300');
-            btn.classList.remove('text-earth-600', 'dark:text-earth-400');
-        } else {
-            btn.classList.remove('bg-forest-50', 'text-forest-700', 'dark:bg-forest-900/20', 'dark:text-forest-300');
-            btn.classList.add('text-earth-600', 'dark:text-earth-400');
-        }
-    });
-
-    switch(view) {
-        case 'dashboard': ui.renderDashboard(state); break;
-        case 'tasks': ui.renderTasks(state.tasks); break;
-        case 'finance': ui.renderFinance(state); break;
-        case 'places': ui.renderPlaces(state.places); break;
-        case 'calendar': ui.renderCalendar(state.events); break;
-        case 'admin': window.location.href = '/admin/'; break; // Redirect to Django Admin
+        console.error('Falha ao carregar dados da aplicação:', err);
     }
 }
 
 function setupEventListeners() {
-    // Navigation
+    // Navegação
     document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.addEventListener('click', () => navigateTo(btn.dataset.view));
+        btn.addEventListener('click', () => router.navigateTo(btn.dataset.view));
     });
 
-    // Theme Toggle
+    // Alternador de tema
     const themeBtn = document.getElementById('theme-toggle');
     if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            state.isDarkMode = !state.isDarkMode;
-            localStorage.setItem('theme', state.isDarkMode ? 'dark' : 'light');
-            applyTheme();
-        });
+        themeBtn.addEventListener('click', () => theme.toggle());
     }
 
     // Logout
@@ -105,17 +62,16 @@ function setupEventListeners() {
         });
     }
 
-    // Login Form (Delegated)
+    // Formulário de login (delegação)
     document.addEventListener('submit', async (e) => {
         if (e.target.id === 'login-form') {
             e.preventDefault();
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
-            const errorEl = document.getElementById('login-error');
-            
+            const errorEl  = document.getElementById('login-error');
             try {
                 await api.auth.login(username, password);
-                init(); // Re-init app
+                init();
             } catch (err) {
                 errorEl.innerText = err.message;
                 errorEl.classList.remove('hidden');
@@ -124,17 +80,6 @@ function setupEventListeners() {
     });
 }
 
-function applyTheme() {
-    if (state.isDarkMode) {
-        document.documentElement.classList.add('dark');
-        const icon = document.getElementById('theme-icon');
-        if (icon) icon.setAttribute('name', 'sunny-outline');
-    } else {
-        document.documentElement.classList.remove('dark');
-        const icon = document.getElementById('theme-icon');
-        if (icon) icon.setAttribute('name', 'moon-outline');
-    }
-}
-
-// Start app
+// Inicia a aplicação
 document.addEventListener('DOMContentLoaded', init);
+

@@ -1,4 +1,5 @@
 // views/tasks.js - Renderização da tela de Tarefas
+// Depende de: components/modals/task-modal.js, core/state.js
 
 ui.renderTasks = function (tasks) {
     const container = document.getElementById('view-container');
@@ -13,14 +14,14 @@ ui.renderTasks = function (tasks) {
                     </div>
                     <div>
                         <h4 class="font-bold text-earth-800 dark:text-earth-200 ${task.status === 'COMPLETED' ? 'line-through opacity-50' : ''}">${task.title}</h4>
-                        <p class="text-xs text-earth-500">${task.due_date}</p>
+                        <p class="text-xs text-earth-500">${task.due_date || ''}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="px-3 py-1 text-xs rounded-full ${task.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">
                         ${task.status}
                     </span>
-                    <button class="p-2 text-earth-400 hover:text-earth-600 transition-colors">
+                    <button class="btn-edit-task p-2 text-earth-400 hover:text-earth-600 transition-colors" data-task-id="${task.id}">
                         <ion-icon name="ellipsis-vertical"></ion-icon>
                     </button>
                 </div>
@@ -32,7 +33,7 @@ ui.renderTasks = function (tasks) {
         <div class="animate-in">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-forest-900 dark:text-forest-100">Suas Tarefas</h2>
-                <button class="bg-forest-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-forest-700 transition-all">
+                <button id="btn-new-task" class="bg-forest-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-forest-700 transition-all">
                     <ion-icon name="add-outline"></ion-icon> Nova Tarefa
                 </button>
             </div>
@@ -41,4 +42,13 @@ ui.renderTasks = function (tasks) {
             </div>
         </div>
     `;
+
+    document.getElementById('btn-new-task').addEventListener('click', () => taskModal.open());
+
+    container.querySelectorAll('.btn-edit-task').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const task = state.tasks.find(t => t.id === parseInt(btn.dataset.taskId));
+            if (task) taskModal.open(task);
+        });
+    });
 };

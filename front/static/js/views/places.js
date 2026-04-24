@@ -1,4 +1,5 @@
 // views/places.js - Renderização da tela de Passeios
+// Depende de: components/modals/place-modal.js, core/state.js
 
 ui.renderPlaces = function (places) {
     const container = document.getElementById('view-container');
@@ -25,7 +26,7 @@ ui.renderPlaces = function (places) {
                     <p class="text-sm text-earth-600 dark:text-earth-400 line-clamp-2">${place.notes || ''}</p>
                     <div class="mt-4 pt-4 border-t border-earth-100 dark:border-earth-800 flex justify-between items-center">
                         <div class="flex text-yellow-400">${stars}</div>
-                        <button class="text-forest-600 hover:text-forest-700 font-bold text-sm">Editar</button>
+                        <button class="btn-edit-place text-forest-600 hover:text-forest-700 font-bold text-sm" data-place-id="${place.id}">Editar</button>
                     </div>
                 </div>
             </div>
@@ -36,7 +37,7 @@ ui.renderPlaces = function (places) {
         <div class="animate-in">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-forest-900 dark:text-forest-100">Desejos de Viagem</h2>
-                <button class="bg-forest-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-forest-700 transition-all">
+                <button id="btn-new-place" class="bg-forest-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-forest-700 transition-all">
                     <ion-icon name="map-outline"></ion-icon> Add Lugar
                 </button>
             </div>
@@ -45,4 +46,13 @@ ui.renderPlaces = function (places) {
             </div>
         </div>
     `;
+
+    document.getElementById('btn-new-place').addEventListener('click', () => placeModal.open());
+
+    container.querySelectorAll('.btn-edit-place').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const place = state.places.find(p => p.id === parseInt(btn.dataset.placeId));
+            if (place) placeModal.open(place);
+        });
+    });
 };

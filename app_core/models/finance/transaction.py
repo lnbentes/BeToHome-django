@@ -1,34 +1,7 @@
 from django.db import models
 
-
-class Category(models.Model):
-    TYPE_CHOICES = [
-        ('INCOME', 'Income'),
-        ('EXPENSE', 'Expense'),
-        ('BOTH', 'Both'),
-    ]
-    name = models.CharField(max_length=100)
-    icon = models.CharField(max_length=50)
-    color = models.CharField(max_length=7)
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-
-    def __str__(self):
-        return self.name
-
-
-class Account(models.Model):
-    TYPE_CHOICES = [
-        ('BANK', 'Bank'),
-        ('WALLET', 'Wallet'),
-        ('INVESTMENT', 'Investment'),
-    ]
-    name = models.CharField(max_length=100)
-    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    type = models.CharField(max_length=15, choices=TYPE_CHOICES)
-    color = models.CharField(max_length=7)
-
-    def __str__(self):
-        return self.name
+from .account import Account
+from .category import Category
 
 
 class Transaction(models.Model):
@@ -67,6 +40,11 @@ class Transaction(models.Model):
     installment_current = models.IntegerField(null=True, blank=True)
     installment_total = models.IntegerField(null=True, blank=True)
     installment_id_group = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Transaction'
+        verbose_name_plural = 'Transactions'
+        ordering = ['-date']
 
     def __str__(self):
         return self.description

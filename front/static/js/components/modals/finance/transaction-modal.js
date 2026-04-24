@@ -164,6 +164,12 @@ const transactionModal = {
             if (!data.category) delete data.category;
             if (isEdit) delete data.installments;
 
+            // Se o bloco de parcelas estiver oculto, ignora o valor capturado pelo FormData
+            const installmentRow = document.getElementById('tx-installment-row');
+            if (installmentRow && installmentRow.classList.contains('hidden')) {
+                data.installments = 1;
+            }
+
             submitBtn.disabled = true;
             submitBtn.textContent = 'Salvando...';
 

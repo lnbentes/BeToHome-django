@@ -131,8 +131,25 @@ function financeRenderContent() {
     // ── Injeção no DOM ────────────────────────────────────────────────────────
     document.getElementById('finance-content').innerHTML = `
         <!-- Seletor de período -->
-        <div class="flex flex-wrap items-center gap-3 bg-white dark:bg-earth-900 p-4 rounded-2xl border border-earth-200 dark:border-earth-800">
-            <ion-icon name="calendar-outline" class="text-earth-400 text-xl"></ion-icon>
+        <div class="sticky top-14 z-30 flex flex-wrap items-center gap-3 bg-white dark:bg-earth-900 p-4 rounded-2xl border border-earth-200 dark:border-earth-800 shadow-md transition-shadow">
+            <!-- Botão: volta ao mês atual -->
+            <button id="btn-today" title="Ir para o mês atual"
+                class="p-2 rounded-xl text-earth-400 hover:text-forest-600 hover:bg-forest-50 dark:hover:bg-forest-900/20 transition-colors">
+                <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
+            </button>
+
+            <!-- Navegação com setas -->
+            <div class="flex items-center gap-1">
+                <button id="btn-prev-month" title="Mês anterior"
+                    class="p-1.5 rounded-lg text-earth-400 hover:text-earth-700 dark:hover:text-earth-200 hover:bg-earth-100 dark:hover:bg-earth-800 transition-colors">
+                    <ion-icon name="chevron-back-outline" class="text-lg"></ion-icon>
+                </button>
+                <button id="btn-next-month" title="Próximo mês"
+                    class="p-1.5 rounded-lg text-earth-400 hover:text-earth-700 dark:hover:text-earth-200 hover:bg-earth-100 dark:hover:bg-earth-800 transition-colors">
+                    <ion-icon name="chevron-forward-outline" class="text-lg"></ion-icon>
+                </button>
+            </div>
+
             <select id="finance-month-sel" class="px-3 py-2 rounded-xl border border-earth-200 dark:border-earth-700 bg-white dark:bg-earth-800 text-sm font-medium focus:ring-2 focus:ring-forest-500 outline-none">
                 ${monthOptions}
             </select>

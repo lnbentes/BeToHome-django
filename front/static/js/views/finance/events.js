@@ -13,6 +13,36 @@ function financeBindEvents() {
         financeLoadMonth();
     });
 
+    // Botão "hoje"
+    document.getElementById('btn-today').addEventListener('click', () => {
+        const now = new Date();
+        financeState.month = now.getMonth() + 1;
+        financeState.year  = now.getFullYear();
+        financeLoadMonth();
+    });
+
+    // Seta: mês anterior
+    document.getElementById('btn-prev-month').addEventListener('click', () => {
+        if (financeState.month === 1) {
+            financeState.month = 12;
+            financeState.year -= 1;
+        } else {
+            financeState.month -= 1;
+        }
+        financeLoadMonth();
+    });
+
+    // Seta: próximo mês
+    document.getElementById('btn-next-month').addEventListener('click', () => {
+        if (financeState.month === 12) {
+            financeState.month = 1;
+            financeState.year += 1;
+        } else {
+            financeState.month += 1;
+        }
+        financeLoadMonth();
+    });
+
     // ── Filtros de busca ──────────────────────────────────────────────────────
     document.getElementById('finance-search').addEventListener('input', e => {
         financeState.search = e.target.value;

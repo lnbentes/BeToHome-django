@@ -53,32 +53,6 @@
             }
         }
     </script>
-    <style>
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #d9d2cb;
-            border-radius: 10px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #453831;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .animate-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </head>
 <body class="bg-earth-50 dark:bg-earth-950 text-earth-900 dark:text-earth-50 transition-colors duration-300">
     <div id="app-root">
@@ -89,12 +63,24 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     
-    <!-- App Logic -->
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- API Client -->
     <script src="{% static 'js/api.js' %}"></script>
+
+    <!-- UI core (define o objeto `ui`) -->
     <script src="{% static 'js/ui.js' %}"></script>
+
+    <!-- Views individuais (estendem `ui`) -->
+    <script src="{% static 'js/views/login.js' %}"></script>
+    <script src="{% static 'js/views/dashboard.js' %}"></script>
+    <script src="{% static 'js/views/tasks.js' %}"></script>
+    <script src="{% static 'js/views/finance.js' %}"></script>
+    <script src="{% static 'js/views/places.js' %}"></script>
+    <script src="{% static 'js/views/calendar.js' %}"></script>
+
+    <!-- Controlador principal da aplicação -->
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

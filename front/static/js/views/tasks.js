@@ -1,0 +1,44 @@
+// views/tasks.js - Renderização da tela de Tarefas
+
+ui.renderTasks = function (tasks) {
+    const container = document.getElementById('view-container');
+    document.getElementById('view-title').innerText = 'Tarefas';
+
+    const taskItems = tasks.length
+        ? tasks.map(task => `
+            <div class="flex items-center justify-between p-4 border-b border-earth-100 dark:border-earth-800 hover:bg-earth-50 dark:hover:bg-earth-800 transition-colors">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-forest-100 text-forest-600 flex items-center justify-center">
+                        <ion-icon name="${task.status === 'COMPLETED' ? 'checkbox' : 'square-outline'}"></ion-icon>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-earth-800 dark:text-earth-200 ${task.status === 'COMPLETED' ? 'line-through opacity-50' : ''}">${task.title}</h4>
+                        <p class="text-xs text-earth-500">${task.due_date}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="px-3 py-1 text-xs rounded-full ${task.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">
+                        ${task.status}
+                    </span>
+                    <button class="p-2 text-earth-400 hover:text-earth-600 transition-colors">
+                        <ion-icon name="ellipsis-vertical"></ion-icon>
+                    </button>
+                </div>
+            </div>
+        `).join('')
+        : '<div class="p-12 text-center text-earth-500">Nenhuma tarefa encontrada.</div>';
+
+    container.innerHTML = `
+        <div class="animate-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-forest-900 dark:text-forest-100">Suas Tarefas</h2>
+                <button class="bg-forest-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-forest-700 transition-all">
+                    <ion-icon name="add-outline"></ion-icon> Nova Tarefa
+                </button>
+            </div>
+            <div class="bg-white dark:bg-earth-900 rounded-2xl border border-earth-200 dark:border-earth-800 overflow-hidden">
+                ${taskItems}
+            </div>
+        </div>
+    `;
+};

@@ -24,7 +24,7 @@ ui.renderDashboard = function (appData) {
                 <p class="text-earth-600 dark:text-earth-400">Aqui está o que acontece na sua eco-casa hoje.</p>
             </header>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-white dark:bg-earth-900 p-5 rounded-2xl shadow-sm border border-earth-200 dark:border-earth-800">
                     <div class="flex justify-between items-start">
                         <div>
@@ -72,14 +72,14 @@ ui.renderDashboard = function (appData) {
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                <div class="bg-white dark:bg-earth-900 p-6 rounded-2xl shadow-sm border border-earth-200 dark:border-earth-800 h-80">
-                    <h3 class="text-lg font-semibold text-earth-800 dark:text-earth-100 mb-4 flex items-center gap-2">
+                <div class="bg-white dark:bg-earth-900 p-4 md:p-6 rounded-2xl shadow-sm border border-earth-200 dark:border-earth-800 h-64 md:h-80">
+                    <h3 class="text-base md:text-lg font-semibold text-earth-800 dark:text-earth-100 mb-3 md:mb-4 flex items-center gap-2">
                         Fluxo de Caixa
                     </h3>
                     <canvas id="cashflow-chart"></canvas>
                 </div>
-                <div class="bg-white dark:bg-earth-900 p-6 rounded-2xl shadow-sm border border-earth-200 dark:border-earth-800 h-80">
-                    <h3 class="text-lg font-semibold text-earth-800 dark:text-earth-100 mb-4">Despesas por Categoria</h3>
+                <div class="bg-white dark:bg-earth-900 p-4 md:p-6 rounded-2xl shadow-sm border border-earth-200 dark:border-earth-800 h-64 md:h-80">
+                    <h3 class="text-base md:text-lg font-semibold text-earth-800 dark:text-earth-100 mb-3 md:mb-4">Despesas por Categoria</h3>
                     <canvas id="category-chart"></canvas>
                 </div>
             </div>

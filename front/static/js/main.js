@@ -42,8 +42,13 @@ async function loadAppData() {
 }
 
 function setupEventListeners() {
-    // Navegação
+    // Navegação sidebar
     document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => router.navigateTo(btn.dataset.view));
+    });
+
+    // Navegação bottom nav (mobile)
+    document.querySelectorAll('.bottom-nav-item').forEach(btn => {
         btn.addEventListener('click', () => router.navigateTo(btn.dataset.view));
     });
 

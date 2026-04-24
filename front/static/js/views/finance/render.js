@@ -131,7 +131,7 @@ function financeRenderContent() {
     // ── Injeção no DOM ────────────────────────────────────────────────────────
     document.getElementById('finance-content').innerHTML = `
         <!-- Seletor de período -->
-        <div class="sticky top-14 z-30 flex flex-wrap items-center gap-3 bg-white dark:bg-earth-900 p-4 rounded-2xl border border-earth-200 dark:border-earth-800 shadow-md transition-shadow">
+        <div class="sticky top-12 md:top-14 z-30 flex flex-wrap items-center gap-2 md:gap-3 bg-white dark:bg-earth-900 p-3 md:p-4 rounded-2xl border border-earth-200 dark:border-earth-800 shadow-md transition-shadow">
             <!-- Botão: volta ao mês atual -->
             <button id="btn-today" title="Ir para o mês atual"
                 class="p-2 rounded-xl text-earth-400 hover:text-forest-600 hover:bg-forest-50 dark:hover:bg-forest-900/20 transition-colors">
@@ -162,7 +162,7 @@ function financeRenderContent() {
         </div>
 
         <!-- Resumo mensal -->
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-3 sm:grid-cols-3 gap-3 md:gap-4">
             <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-5 rounded-2xl">
                 <p class="text-xs text-green-600 dark:text-green-400 font-medium mb-1">Receitas</p>
                 <p class="text-xl font-bold text-green-700 dark:text-green-300">${fmtBRL(summary.income)}</p>

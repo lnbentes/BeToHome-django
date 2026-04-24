@@ -6,7 +6,7 @@ ui.renderCalendar = function (events) {
 
     const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
     const dayHeaders = weekDays.map(d =>
-        `<div class="bg-earth-50 dark:bg-earth-950 p-4 text-center text-xs font-bold text-earth-500 uppercase">${d}</div>`
+        `<div class="bg-earth-50 dark:bg-earth-950 p-2 md:p-4 text-center text-xs font-bold text-earth-500 uppercase">${d}</div>`
     ).join('');
 
     const today = new Date().getDate();
@@ -22,18 +22,18 @@ ui.renderCalendar = function (events) {
             : `<span class="text-sm font-medium text-earth-400">${day}</span>`;
 
         return `
-            <div class="bg-white dark:bg-earth-900 min-h-[120px] p-2 hover:bg-earth-50 dark:hover:bg-earth-800 transition-colors">
+            <div class="bg-white dark:bg-earth-900 min-h-[72px] md:min-h-[120px] p-1.5 md:p-2 hover:bg-earth-50 dark:hover:bg-earth-800 transition-colors">
                 ${dayLabel}
-                <div class="mt-2 space-y-1">${eventBadges}</div>
+                <div class="mt-1 space-y-0.5 md:space-y-1">${eventBadges}</div>
             </div>
         `;
     }).join('');
 
     container.innerHTML = `
-        <div class="animate-in bg-white dark:bg-earth-900 rounded-3xl border border-earth-200 dark:border-earth-800 p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold flex items-center gap-3">
-                    <ion-icon name="calendar-outline" class="text-forest-600"></ion-icon>
+        <div class="animate-in bg-white dark:bg-earth-900 rounded-3xl border border-earth-200 dark:border-earth-800 p-4 md:p-8">
+            <div class="flex justify-between items-center mb-5 md:mb-8">
+                <h2 class="text-xl md:text-2xl font-bold flex items-center gap-3">
+                    <ion-icon name="calendar-outline" class="text-forest-600 shrink-0"></ion-icon>
                     Junho 2024
                 </h2>
                 <div class="flex gap-2">
@@ -42,9 +42,12 @@ ui.renderCalendar = function (events) {
                 </div>
             </div>
 
-            <div class="grid grid-cols-7 gap-px bg-earth-200 dark:bg-earth-800 rounded-xl overflow-hidden shadow-inner">
-                ${dayHeaders}
-                ${dayCells}
+            <!-- Scroll horizontal em telas menores que 560px -->
+            <div class="calendar-scroll-wrapper -mx-4 md:mx-0 px-4 md:px-0">
+                <div class="calendar-grid grid grid-cols-7 gap-px bg-earth-200 dark:bg-earth-800 rounded-xl overflow-hidden shadow-inner">
+                    ${dayHeaders}
+                    ${dayCells}
+                </div>
             </div>
         </div>
     `;

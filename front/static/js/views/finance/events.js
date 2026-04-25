@@ -84,6 +84,9 @@ function financeBindEvents() {
     );
 
     // ── Contas ────────────────────────────────────────────────────────────────
+    document.getElementById('btn-manage-data').addEventListener('click', () =>
+        financeDataModal.open({ onDone: financeLoadMonth })
+    );
     document.getElementById('btn-new-account').addEventListener('click', () =>
         accountModal.open({ onSaved: _financeReloadAccounts })
     );

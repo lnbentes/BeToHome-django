@@ -1,6 +1,6 @@
 {% load static %}
 {% comment %}Cache-buster: incrementar este valor ao deploiar mudanças no JS/CSS{% endcomment %}
-{% with v="4" %}
+{% with v="5" %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -107,6 +107,7 @@
     <script src="{% static 'js/components/modals/finance/transaction-modal.js' %}?v={{ v }}"></script>
     <script src="{% static 'js/components/modals/finance/account-modal.js' %}?v={{ v }}"></script>
     <script src="{% static 'js/components/modals/finance/category-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/finance/data-modal.js' %}?v={{ v }}"></script>
 
     <!-- ═══════════════════════════════════════════
          Views individuais (estendem `ui`)

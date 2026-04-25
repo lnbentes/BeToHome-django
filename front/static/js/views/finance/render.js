@@ -211,10 +211,17 @@ function financeRenderContent() {
         <div>
             <div class="flex justify-between items-center mb-3">
                 <h3 class="text-lg font-bold">Contas</h3>
-                <button id="btn-new-account"
-                    class="flex items-center gap-1.5 text-sm bg-forest-600 hover:bg-forest-700 text-white px-3 py-1.5 rounded-xl transition-colors">
-                    <ion-icon name="add-outline"></ion-icon> Nova Conta
-                </button>
+                <div class="flex gap-2">
+                    <button id="btn-manage-data"
+                        class="flex items-center gap-1.5 text-sm bg-earth-100 dark:bg-earth-800 hover:bg-earth-200 dark:hover:bg-earth-700 text-earth-700 dark:text-earth-300 px-3 py-1.5 rounded-xl transition-colors"
+                        title="Importar, exportar ou excluir dados">
+                        <ion-icon name="server-outline"></ion-icon> Dados
+                    </button>
+                    <button id="btn-new-account"
+                        class="flex items-center gap-1.5 text-sm bg-forest-600 hover:bg-forest-700 text-white px-3 py-1.5 rounded-xl transition-colors">
+                        <ion-icon name="add-outline"></ion-icon> Nova Conta
+                    </button>
+                </div>
             </div>
             <div class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
                 ${accountCards || '<p class="text-earth-400 text-sm py-4">Nenhuma conta cadastrada.</p>'}

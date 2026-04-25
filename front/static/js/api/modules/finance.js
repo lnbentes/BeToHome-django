@@ -23,6 +23,32 @@ const _apiFinance = {
             ).toString();
             return _http.request(`/api/transactions/summary/${query ? '?' + query : ''}`);
         },
+        export: (params = {}) => {
+            const query = new URLSearchParams(
+                Object.fromEntries(
+                    Object.entries(params).filter(([, v]) => v !== null && v !== undefined && v !== '')
+                )
+            ).toString();
+            return `/api/transactions/export/${query ? '?' + query : ''}`;
+        },
+        import: async (formData) => {
+            const response = await fetch('/api/transactions/import/', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': _http.getCookie('csrftoken') },
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || data.detail || 'Erro na importação');
+            return data;
+        },
+        importJson: (payload) => _http.request('/api/transactions/import/', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        }),
+        bulkDelete: (body) => _http.request('/api/transactions/bulk-delete/', {
+            method: 'DELETE',
+            body: JSON.stringify(body),
+        }),
     },
 
     accounts: {

@@ -1,12 +1,14 @@
+import json
 import logging
 from datetime import date
 
+from django.http import HttpResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from app_core.serializers import CategorySerializer, AccountSerializer, TransactionSerializer
-from app_core.services import CategoryService, AccountService, TransactionService, FinanceService
+from app_core.services import CategoryService, AccountService, TransactionService, FinanceService, FinanceDataService
 
 logger = logging.getLogger(__name__)
 
@@ -94,3 +96,95 @@ class TransactionViewSet(viewsets.ModelViewSet):
         summary = FinanceService.get_monthly_summary(request.user, year, month)
         breakdown = FinanceService.get_category_breakdown(request.user, year, month)
         return Response({**summary, 'category_breakdown': breakdown})
+
+    # ── Exportação ────────────────────────────────────────────────────────────
+
+    @action(detail=False, methods=['get'], url_path='export')
+    def export_data(self, request):
+        """
+        Exporta dados financeiros como arquivo JSON para download.
+        Query params: account_ids (lista separada por vírgula), year, month.
+        """
+        params = request.query_params
+        raw_ids = params.get('account_ids', '')
+        account_ids = [int(i) for i in raw_ids.split(',') if i.strip().isdigit()] or None
+        year = int(params['year']) if params.get('year') else None
+        month = int(params['month']) if params.get('month') else None
+
+        data = FinanceDataService.export_data(
+            user=request.user,
+            account_ids=account_ids,
+            year=year,
+            month=month,
+        )
+        filename_parts = ['financeiro']
+        if year:
+            filename_parts.append(str(year))
+        if month:
+            filename_parts.append(str(month).zfill(2))
+        filename = '_'.join(filename_parts) + '.json'
+
+        response = HttpResponse(
+            json.dumps(data, ensure_ascii=False, indent=2),
+            content_type='application/json',
+        )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+    # ── Importação ────────────────────────────────────────────────────────────
+
+    @action(detail=False, methods=['post'], url_path='import')
+    def import_data(self, request):
+        """
+        Importa dados financeiros a partir de um payload JSON.
+
+        Formatos aceitos:
+          1. Multipart com campo 'file' (.json gerado pelo export)
+          2. Body JSON com o formato completo: { accounts, categories, transactions }
+          3. Body JSON com apenas transações: { transactions: [...] }
+          4. Body JSON como array direto de transações: [{...}, {...}]
+        """
+        # ── Leitura do payload ─────────────────────────────────────────────
+        if request.FILES.get('file'):
+            try:
+                raw = json.loads(request.FILES['file'].read())
+            except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+                return Response({'error': f'Arquivo JSON inválido: {exc}'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            raw = request.data
+
+        # ── Normalização: array direto → wrapper padrão ────────────────────
+        if isinstance(raw, list):
+            payload = {'accounts': [], 'categories': [], 'transactions': raw}
+        elif isinstance(raw, dict):
+            payload = raw
+        else:
+            return Response(
+                {'error': 'Payload inválido. Envie um objeto JSON ou um array de transações.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        result = FinanceDataService.import_data(user=request.user, payload=payload)
+        return Response(result, status=status.HTTP_200_OK)
+
+    # ── Exclusão em lote ──────────────────────────────────────────────────────
+
+    @action(detail=False, methods=['delete'], url_path='bulk-delete')
+    def bulk_delete(self, request):
+        """
+        Exclui transações em lote.
+        Body JSON: { account_ids: [], year: int|null, month: int|null }
+        """
+        body = request.data
+        raw_ids = body.get('account_ids') or []
+        account_ids = [int(i) for i in raw_ids if str(i).isdigit()] or None
+        year = int(body['year']) if body.get('year') else None
+        month = int(body['month']) if body.get('month') else None
+
+        result = FinanceDataService.delete_bulk(
+            user=request.user,
+            account_ids=account_ids,
+            year=year,
+            month=month,
+        )
+        return Response(result, status=status.HTTP_200_OK)

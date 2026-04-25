@@ -42,6 +42,10 @@ class Transaction(models.Model):
     installment_total = models.IntegerField(null=True, blank=True)
     installment_id_group = models.CharField(max_length=100, null=True, blank=True)
 
+    # Indica se esta transação já foi aplicada ao saldo da conta.
+    # Parcelas futuras ficam como False até chegarem ao mês vigente.
+    balance_applied = models.BooleanField(default=False)
+
     class Meta:
         verbose_name = 'Transaction'
         verbose_name_plural = 'Transactions'

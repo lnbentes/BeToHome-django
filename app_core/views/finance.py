@@ -78,11 +78,13 @@ class TransactionViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         validated = dict(serializer.validated_data)
         validated.pop('installments', None)  # ignorado em edição
-        for attr, value in validated.items():
-            setattr(instance, attr, value)
-        instance.save()
-        logger.info('Transação atualizada: id=%s user=%s', instance.id, request.user.id)
-        return Response(self.get_serializer(instance).data)
+        updated = TransactionService.update_transaction(instance, validated)
+        return Response(self.get_serializer(updated).data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        TransactionService.delete_transaction(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'], url_path='summary')
     def monthly_summary(self, request):

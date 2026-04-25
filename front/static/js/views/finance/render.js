@@ -27,16 +27,26 @@ function financeRenderContent() {
                Nenhuma transação neste período
            </div>`
         : transactions.map(t => {
-            const catColor = t.category_color || '#888';
-            const catIcon  = t.category_icon  || 'help-outline';
-            const catName  = t.category_name  || 'Geral';
-            const sign     = t.type === 'INCOME' ? '+' : '-';
+            const isTransfer = t.type === 'TRANSFER';
+            const catColor = isTransfer ? '#3b82f6' : (t.category_color || '#888');
+            const catIcon  = isTransfer ? 'swap-horizontal-outline' : (t.category_icon || 'help-outline');
+            const catName  = isTransfer
+                ? `${t.account_name} → ${t.to_account_name || '?'}`
+                : (t.category_name || 'Geral');
+            const sign     = t.type === 'INCOME' ? '+' : (isTransfer ? '⇄' : '-');
             const amtClass = t.type === 'INCOME'
                 ? 'text-green-600 dark:text-green-400'
-                : 'text-red-500';
+                : isTransfer
+                    ? 'text-blue-500 dark:text-blue-400'
+                    : 'text-red-500';
             const installBadge = t.installment_total
                 ? `<span class="ml-2 text-[10px] bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-200 px-1.5 py-0.5 rounded-full font-semibold">
                        ${t.installment_current}/${t.installment_total}x
+                   </span>`
+                : '';
+            const transferBadge = isTransfer
+                ? `<span class="ml-2 text-[10px] bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-1.5 py-0.5 rounded-full font-semibold">
+                       Transferência
                    </span>`
                 : '';
             return `
@@ -50,9 +60,14 @@ function financeRenderContent() {
                     <div class="min-w-0">
                         <div class="flex items-center gap-1 flex-wrap">
                             <h4 class="font-semibold text-earth-800 dark:text-earth-200 truncate">${t.description}</h4>
-                            ${installBadge}
+                            ${installBadge}${transferBadge}
                         </div>
                         <p class="text-xs text-earth-500">${fmtDate(t.date)} · ${catName}</p>
+                        <span class="inline-flex items-center gap-1 mt-0.5 text-[10px] font-medium px-1.5 py-0.5 rounded-full text-white"
+                              style="background-color:${t.account_color || '#6b7280'}">
+                            <ion-icon name="${t.account_icon || 'wallet-outline'}" class="text-[9px]"></ion-icon>
+                            ${t.account_name || 'Conta'}
+                        </span>
                     </div>
                 </div>
                 <div class="flex items-center gap-3 shrink-0">
@@ -91,7 +106,16 @@ function financeRenderContent() {
 
     // ── Cards de contas ───────────────────────────────────────────────────────
     const typeLabel = { BANK: 'Banco', WALLET: 'Carteira', INVESTMENT: 'Investimento', CREDIT: 'Crédito' };
-    const accountCards = accounts.map(acc => `
+    const accountCards = accounts.map(acc => {
+        const hasPending = acc.pending_installments_amount > 0;
+        const isNegative = acc.balance < 0;
+        const pendingBlock = hasPending ? `
+            <div class="mt-3 pt-3 border-t border-white/20">
+                <p class="text-[10px] font-medium opacity-80 uppercase tracking-wide mb-0.5">Parcelas futuras</p>
+                <p class="text-sm font-bold">${fmtBRL(acc.pending_installments_amount)}</p>
+                <p class="text-[10px] opacity-70">em até ${acc.pending_installments_months} ${acc.pending_installments_months === 1 ? 'mês' : 'meses'}</p>
+            </div>` : '';
+        return `
         <div class="relative min-w-[220px] p-5 rounded-2xl text-white shadow-lg group"
              style="background:linear-gradient(135deg,${acc.color}cc,${acc.color}66)">
             <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -109,8 +133,11 @@ function financeRenderContent() {
                 <p class="text-xs font-medium opacity-80">${typeLabel[acc.type] || acc.type}</p>
             </div>
             <h4 class="text-base font-bold mb-2">${acc.name}</h4>
-            <p class="text-xl font-bold">${fmtBRL(acc.balance)}</p>
-        </div>`).join('');
+            <p class="text-xl font-bold ${isNegative ? 'text-red-300' : ''}">${fmtBRL(acc.balance)}</p>
+            ${isNegative ? `<p class="text-[10px] text-red-200 mt-0.5 flex items-center gap-1"><ion-icon name="warning-outline"></ion-icon>Saldo negativo</p>` : ''}
+            ${pendingBlock}
+        </div>`;
+    }).join('');
 
     // ── Chips de categorias ───────────────────────────────────────────────────
     const categoryChips = categories.map(c => `
@@ -164,16 +191,19 @@ function financeRenderContent() {
         <!-- Resumo mensal -->
         <div class="grid grid-cols-3 sm:grid-cols-3 gap-3 md:gap-4">
             <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-5 rounded-2xl">
-                <p class="text-xs text-green-600 dark:text-green-400 font-medium mb-1">Receitas</p>
+                <p class="text-xs text-green-600 dark:text-green-400 font-medium mb-1">Receitas do Mês</p>
                 <p class="text-xl font-bold text-green-700 dark:text-green-300">${fmtBRL(summary.income)}</p>
+                <p class="text-[10px] text-green-500 dark:text-green-500 mt-1 opacity-70">todas as contas</p>
             </div>
             <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-5 rounded-2xl">
-                <p class="text-xs text-red-600 dark:text-red-400 font-medium mb-1">Despesas</p>
+                <p class="text-xs text-red-600 dark:text-red-400 font-medium mb-1">Despesas do Mês</p>
                 <p class="text-xl font-bold text-red-700 dark:text-red-300">${fmtBRL(summary.expense)}</p>
+                <p class="text-[10px] text-red-500 dark:text-red-500 mt-1 opacity-70">todas as contas</p>
             </div>
             <div class="bg-white dark:bg-earth-900 border border-earth-200 dark:border-earth-800 p-5 rounded-2xl">
-                <p class="text-xs text-earth-500 font-medium mb-1">Saldo</p>
+                <p class="text-xs text-earth-500 font-medium mb-1">Saldo do Mês</p>
                 <p class="text-xl font-bold ${balanceClass}">${fmtBRL(summary.balance)}</p>
+                <p class="text-[10px] text-earth-400 mt-1 opacity-70">receitas − despesas</p>
             </div>
         </div>
 
@@ -215,8 +245,9 @@ function financeRenderContent() {
                         <select id="finance-type-filter"
                             class="px-3 py-2.5 rounded-xl border border-earth-200 dark:border-earth-700 bg-white dark:bg-earth-800 text-sm focus:ring-2 focus:ring-forest-500 outline-none">
                             <option value="">Todos os tipos</option>
-                            <option value="INCOME"  ${financeState.txType === 'INCOME'  ? 'selected' : ''}>Receitas</option>
-                            <option value="EXPENSE" ${financeState.txType === 'EXPENSE' ? 'selected' : ''}>Despesas</option>
+                            <option value="INCOME"   ${financeState.txType === 'INCOME'   ? 'selected' : ''}>Receitas</option>
+                            <option value="EXPENSE"  ${financeState.txType === 'EXPENSE'  ? 'selected' : ''}>Despesas</option>
+                            <option value="TRANSFER" ${financeState.txType === 'TRANSFER' ? 'selected' : ''}>Transferências</option>
                         </select>
                     </div>
                     <div class="flex gap-2 flex-wrap">

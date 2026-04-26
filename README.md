@@ -8,10 +8,10 @@
 ## 🏗️ Arquitetura & Tecnologias
 
 - **Backend:** Django 5.x, Django REST Framework (DRF)
-- **Frontend:** SPA Django Templates + Vanilla JS (ES6), Tailwind CSS
-- **Design:** Tema Earth & Forest, Chart.js
+- **Frontend (Novo):** React 19, TypeScript, Vite, Tailwind CSS v4, Lucide React
+- **Frontend (Legado):** SPA Django Templates + Vanilla JS (em processo de migração)
+- **Design:** Tema Earth & Forest (Dark/Light mode nativo)
 - **Banco de Dados:** SQLite
-- **PWA:** Manifesto, Service Worker, funcionamento offline
 
 ---
 
@@ -19,30 +19,22 @@
 
 ```
 BeToHome-django/
-├── app_core/           # App principal (modelos, views, serviços, rotas)
+├── app_core/           # App principal do Backend (modelos, views, serviços, rotas)
 │   ├── models/         # Modelos: finance, task, place, calendar
 │   ├── serializers/    # Serializers DRF
 │   ├── services/       # Regras de negócio (FinanceService, TaskService...)
-│   ├── routes/         # Rotas organizadas por domínio
-│   ├── views/          # ViewSets DRF e views customizadas
-│   ├── admin.py        # Admin Django customizado
-│   ├── urls.py         # URLs do app_core
-│   └── ...
-├── config/             # Configurações do projeto Django
-│   ├── settings.py
-│   ├── urls.py         # Inclui rotas API e front
-│   └── ...
-├── front/              # Front-end SPA e arquivos PWA
-│   ├── templates/      # base.html, index.html (SPA)
-│   ├── static/
-│   │   ├── manifest.json
-│   │   ├── sw.js       # Service Worker
-│   │   ├── css/
-│   │   └── js/
-│   └── urls.py         # Rotas para manifest e SW
-├── requirements.txt    # Dependências
-├── manage.py
-└── ...
+│   └── views/          # ViewSets DRF e views customizadas
+├── config/             # Configurações do projeto Django (settings, urls)
+├── front-react/        # NOVO Frontend em React
+│   ├── src/
+│   │   ├── components/ # Componentes base (Layout, Sidebar, Header)
+│   │   ├── context/    # Contextos globais (AuthContext, ThemeContext, FinanceContext)
+│   │   ├── screens/    # Telas da aplicação (Dashboard, Finance, Login...)
+│   │   └── services/   # Integração com a API do Django via Axios
+│   └── vite.config.ts  # Configuração do Vite e Proxy para o Django
+├── front/              # Frontend legado em Vanilla JS (mantido para fallback)
+├── requirements.txt    # Dependências do Python (Backend)
+└── manage.py           # CLI do Django
 ```
 
 ---
@@ -73,6 +65,12 @@ Prefixo: `/api/`
 
 ## 🚀 Como rodar localmente
 
+Como o projeto agora é dividido entre Django (Backend) e React (Frontend), você precisa rodar ambos os servidores simultaneamente em terminais diferentes.
+
+### 1️⃣ Iniciando o Backend (Django)
+
+No primeiro terminal, na pasta raiz do projeto (`BeToHome-django/`):
+
 1. Crie e ative o ambiente virtual:
    ```powershell
    python -m venv venv
@@ -82,33 +80,52 @@ Prefixo: `/api/`
    ```powershell
    pip install -r requirements.txt
    ```
-3. Rode as migrações:
+3. Rode as migrações (se necessário):
    ```powershell
    python manage.py migrate
    ```
-4. Popule os dados iniciais:
+4. Popule os dados iniciais (Mock):
    ```powershell
    python manage.py seed_data
    ```
-5. Inicie o servidor:
+5. Inicie o servidor na porta 8000:
    ```powershell
    python manage.py runserver
    ```
 
+### 2️⃣ Iniciando o Frontend (React)
+
+Abra um **segundo terminal**, entre na pasta do frontend e inicie o Vite:
+
+1. Acesse a pasta do React:
+   ```powershell
+   cd front-react
+   ```
+2. Instale os pacotes Node:
+   ```powershell
+   npm install
+   ```
+3. Inicie o servidor de desenvolvimento:
+   ```powershell
+   npm run dev
+   ```
+
+O Frontend estará disponível em **`http://localhost:5173`**. Ele fará proxy automático das chamadas `/api` para o Django rodando na porta `8000`.
+
 ---
 
-## 🔐 Autenticação
+## 🔐 Autenticação e Usuários Mockados
 
-- Usuários de exemplo: `papai`, `mamae`, `filho` (senha: `123456`)
-- Admin: [http://localhost:8000/admin/](http://localhost:8000/admin/) (admin/admin)
+Para facilitar o desenvolvimento, o comando `python manage.py seed_data` cria usuários fictícios no banco de dados.
 
----
+**Usuários da aplicação:**
+- **Papai:** Login: `papai` | Senha: `123456`
+- **Mamãe:** Login: `mamae` | Senha: `123456`
+- **Filho:** Login: `filho` | Senha: `123456`
 
-## 📲 PWA
-
-- Manifesto em `/manifest.json` e Service Worker `/sw.js`
-- Funciona offline (cache dos assets principais)
-- Instale no celular ou desktop ("Adicionar à tela inicial")
+**Administrador do Django:**
+- Acesse [http://localhost:8000/admin/](http://localhost:8000/admin/)
+- Login: `admin` | Senha: `admin`
 
 ---
 

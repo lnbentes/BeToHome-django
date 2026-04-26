@@ -1,4 +1,6 @@
 {% load static %}
+{% comment %}Cache-buster: incrementar este valor ao deploiar mudanças no JS/CSS{% endcomment %}
+{% with v="5" %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v={{ v }}">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -53,32 +55,6 @@
             }
         }
     </script>
-    <style>
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #d9d2cb;
-            border-radius: 10px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #453831;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .animate-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </head>
 <body class="bg-earth-50 dark:bg-earth-950 text-earth-900 dark:text-earth-50 transition-colors duration-300">
     <div id="app-root">
@@ -89,12 +65,69 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     
-    <!-- App Logic -->
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script src="{% static 'js/api.js' %}"></script>
-    <script src="{% static 'js/ui.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <!-- ═══════════════════════════════════════════
+         Camada de API
+         ─────────────────────────────────────────── -->
+    <!-- HTTP infrastructure (getCookie + request) -->
+    <script src="{% static 'js/api/http.js' %}?v={{ v }}"></script>
+    <!-- Módulos por domínio -->
+    <script src="{% static 'js/api/modules/auth.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/users.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/tasks.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/finance.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/places.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/api/modules/events.js' %}?v={{ v }}"></script>
+    <!-- Agregador (monta o objeto global `api`) -->
+    <script src="{% static 'js/api/index.js' %}?v={{ v }}"></script>
+
+    <!-- ═══════════════════════════════════════════
+         Core da aplicação
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/core/state.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/core/theme.js' %}?v={{ v }}"></script>
+
+    <!-- ═══════════════════════════════════════════
+         UI Core
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/ui.js' %}?v={{ v }}"></script>
+
+    <!-- Router (depende de ui + state) -->
+    <script src="{% static 'js/core/router.js' %}?v={{ v }}"></script>
+
+    <!-- ═══════════════════════════════════════════
+         Sistema de Modais
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/components/modals/modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/task-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/place-modal.js' %}?v={{ v }}"></script>
+    <!-- Modais financeiros -->
+    <script src="{% static 'js/components/modals/finance/transaction-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/finance/account-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/finance/category-modal.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/components/modals/finance/data-modal.js' %}?v={{ v }}"></script>
+
+    <!-- ═══════════════════════════════════════════
+         Views individuais (estendem `ui`)
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/views/login.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/dashboard.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/tasks.js' %}?v={{ v }}"></script>
+    <!-- View Financeiro (dividida em módulos) -->
+    <script src="{% static 'js/views/finance/state.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance/loader.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance/render.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance/events.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/finance/index.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/places.js' %}?v={{ v }}"></script>
+    <script src="{% static 'js/views/calendar.js' %}?v={{ v }}"></script>
+
+    <!-- ═══════════════════════════════════════════
+         Controlador principal
+         ─────────────────────────────────────────── -->
+    <script src="{% static 'js/main.js' %}?v={{ v }}"></script>
 </body>
 </html>
+{% endwith %}

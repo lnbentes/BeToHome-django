@@ -1,5 +1,5 @@
-// ui.js - Núcleo de UI: controle de layout e delegação para views/
-// As funções de render estão nos arquivos em static/js/views/
+// ui.js - NÃºcleo de UI: controle de layout e delegaÃ§Ã£o para views/
+// As funÃ§Ãµes de render estÃ£o nos arquivos em static/js/views/
 
 const ui = {
     showApp() {

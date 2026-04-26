@@ -71,12 +71,18 @@ export function AccountsList() {
           accounts.map(acc => (
             <div 
               key={acc.id} 
-              className="relative min-w-[220px] p-5 rounded-2xl text-white shadow-lg group"
+              onClick={() => {
+                setSelectedAccount(acc);
+                setAccountModalOpen(true);
+              }}
+              className="relative min-w-[220px] p-5 rounded-2xl text-white shadow-lg group cursor-pointer hover:-translate-y-1 transition-all duration-300"
               style={{ background: `linear-gradient(135deg, ${acc.color}cc, ${acc.color}66)` }}
             >
-              <div className="flex items-center gap-2 mb-3">
-                {accountIcon(acc.icon, acc.type)}
-                <p className="text-xs font-medium opacity-80">{acc.type}</p>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  {accountIcon(acc.icon, acc.type)}
+                  <p className="text-xs font-medium opacity-80">{acc.type}</p>
+                </div>
               </div>
               <h4 className="text-base font-bold mb-2">{acc.name}</h4>
               <p className={`text-xl font-bold ${acc.balance < 0 ? 'text-red-300' : ''}`}>

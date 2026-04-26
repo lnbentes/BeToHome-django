@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { Leaf, Grid, CheckSquare, BarChart3, MapPin, Calendar, Settings, LogOut } from 'lucide-react';
+import { Leaf, Grid, CheckSquare, BarChart3, MapPin, Calendar, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { authService } from '../../services/authService';
 
 interface SidebarProps {
@@ -10,6 +11,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { setUser } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -76,7 +78,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </NavLink>
         </nav>
 
-        <div className="p-4 mt-auto border-t border-earth-100 dark:border-earth-800">
+        <div className="p-4 mt-auto border-t border-earth-100 dark:border-earth-800 space-y-2">
+          <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-earth-600 hover:bg-earth-100 dark:text-earth-400 dark:hover:bg-earth-800 transition-all font-medium">
+            {theme === 'dark' ? <Sun size={20} className="shrink-0" /> : <Moon size={20} className="shrink-0" />}
+            <span>Tema {theme === 'dark' ? 'Claro' : 'Escuro'}</span>
+          </button>
           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all font-medium">
             <LogOut size={20} className="shrink-0" />
             <span>Sair</span>
